@@ -1,14 +1,18 @@
 #pragma once
 #include "ofxUi.h"
 #include "ofMain.h"
+#include "ofxOsc.h"
 
+#define HOST "localhost"
+#define PORT 12345
 class testApp : public ofBaseApp{
 
 	public:
 		void setup();
 		void update();
 		void draw();
-    void creaGui();
+        void creaGui();
+        void guiEvent(ofxUIEventArgs &e);
 
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -22,4 +26,7 @@ class testApp : public ofBaseApp{
 		
     
     ofxUICanvas *gui, *gui2, *gui3;
+    ofxOscSender sender;
+    vector<string> drawModes;
+    vector<string> shadingModes;
 };

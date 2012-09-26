@@ -2,10 +2,14 @@
 
 //--------------------------------------------------------------
 void testApp::setup(){
-    creaGui();
     ofBackground(10, 10, 10);
     ofEnableAlphaBlending();
     
+    creaGui();
+    sender.setup(HOST, PORT);
+    
+    gui->loadSettings("gui.xml");
+    gui2->loadSettings("gui2.xml");
 }
 
 //--------------------------------------------------------------
@@ -30,7 +34,7 @@ void testApp::creaGui(){
     gui->addSlider("scale", 1.0, 25.0, 1, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui->addSlider("backgroundColor", .0, 255.0, .0, length-xInit, dim, OFX_UI_FONT_SMALL);
     
-    vector<string> drawModes; 
+     
 	drawModes.push_back("faces");
 	drawModes.push_back("fullWireframe");
 	drawModes.push_back("outlineWireframe");
@@ -38,7 +42,7 @@ void testApp::creaGui(){
     gui->addSpacer(length-xInit, 1);
     gui->addRadio("DRAW MODE", drawModes, OFX_UI_ORIENTATION_VERTICAL, dim, dim);
     
-    vector<string> shadingModes; 
+    
 	shadingModes.push_back("none");
 	shadingModes.push_back("lights");
 	shadingModes.push_back("shader");
@@ -85,47 +89,48 @@ void testApp::creaGui(){
     gui2->addSlider("lightX", -1000, 1000, 200, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSlider("lightY", -1000, 1000, 400, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSlider("lightZ", -1000, 1000, 800, length-xInit, dim, OFX_UI_FONT_SMALL);
-    /*
-     panel.addToggle("setupMode", true);
-     panel.addSlider("scale", 1, .1, 25);
-     panel.addSlider("backgroundColor", 0, 0, 255, true);
-     panel.addMultiToggle("drawMode", 3, variadic("faces")("fullWireframe")("outlineWireframe")("occludedWireframe"));
-     panel.addMultiToggle("shading", 0, variadic("none")("lights")("shader"));
-     panel.addToggle("saveCalibration", false);
-     
     
-     panel.addToggle("highlight", false);
-     panel.addSlider("highlightPosition", 0, 0, 1);
-     panel.addSlider("highlightOffset", .1, 0, 1);
-     
-     
-     panel.addSlider("aov", 80, 50, 100);
-     panel.addToggle("CV_CALIB_FIX_ASPECT_RATIO", true);
-     panel.addToggle("CV_CALIB_FIX_K1", true);
-     panel.addToggle("CV_CALIB_FIX_K2", true);
-     panel.addToggle("CV_CALIB_FIX_K3", true);
-     panel.addToggle("CV_CALIB_ZERO_TANGENT_DIST", true);
-     panel.addToggle("CV_CALIB_FIX_PRINCIPAL_POINT", false);
-     
-     
-     panel.addSlider("lineWidth", 2, 1, 8, true);
-     panel.addToggle("useSmoothing", false);
-     panel.addToggle("useFog", false);
-     panel.addSlider("fogNear", 200, 0, 1000);
-     panel.addSlider("fogFar", 1850, 0, 2500);
-     panel.addSlider("screenPointSize", 2, 1, 16, true);
-     panel.addSlider("selectedPointSize", 8, 1, 16, true);
-     panel.addSlider("selectionRadius", 12, 1, 32);
-     panel.addSlider("lightX", 200, -1000, 1000);
-     panel.addSlider("lightY", 400, -1000, 1000);
-     panel.addSlider("lightZ", 800, -1000, 1000);
-     panel.addToggle("randomLighting", false);
-     */
+    ofAddListener(gui->newGUIEvent,this,&testApp::guiEvent);
+    ofAddListener(gui2->newGUIEvent,this,&testApp::guiEvent);
     
+
+    
+}
+void testApp::guiEvent(ofxUIEventArgs &e)
+{
+    string name = e.widget->getName(); 
+	int kind = e.widget->getKind(); 
+    ofxOscMessage m;
+    
+    if(e.widget->getKind() == OFX_UI_WIDGET_TOGGLE){
+        ofxUIToggle *boolValor = (ofxUIToggle *) e.widget;
+        bool valor = boolValor->getValue();
+        m.setAddress("/mapamoko/"+name+"/");
+        m.addIntArg(valor);
+    }else if(e.widget->getKind() == OFX_UI_WIDGET_RADIO){
+        ofxUIRadio * rv =  (ofxUIRadio *) e.widget;
+        vector<ofxUIToggle *> togles = rv->getToggles();
+        for(int i = 0; togles.size(); i++){
+            bool valor = togles.at(i)->getValue();
+            m.setAddress("/mapamoko/"+name+"/");
+            m.addIntArg(valor);
+        }
+    }else if(e.widget->getKind() == OFX_UI_WIDGET_SLIDER_H){
+        ofxUISlider *floatValor = (ofxUISlider *) e.widget;
+        float valor = floatValor->getValue();
+        m.setAddress("/mapamoko/"+name+"/");
+        m.addIntArg(valor);
+    }
+    
+    
+    sender.sendMessage(m);
 }
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
-
+    if(key == 's'){
+        gui->saveSettings("gui.xml");
+        gui2->saveSettings("gui2.xml");
+    }
 }
 
 //--------------------------------------------------------------
