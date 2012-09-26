@@ -43,9 +43,15 @@ void testApp::creaGui(){
 	drawModes.push_back("outlineWireframe");
     drawModes.push_back("occludedWireframe");
     gui->addSpacer(length-xInit, 1);
-    gui->addRadio("DRAW MODE", drawModes, OFX_UI_ORIENTATION_VERTICAL, dim, dim);
-    gui->addToggle("shader", false, dim, dim, OFX_UI_FONT_SMALL);
-    gui->addToggle("useLights", false, dim, dim, OFX_UI_FONT_SMALL);
+    gui->addRadio("DRAW MODE", drawModes, OFX_UI_ORIENTATION_VERTICAL, 40, 40);
+    gui->addSpacer(length-xInit, 1);
+    gui->addToggle("shader", false, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addToggle("useLights", false, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addToggle("randomLighting", false, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addSpacer(length-xInit, 1);
+    gui->addToggle("setupMode", true, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addToggle("useSmoothing", false, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addButton("saveCalibration", false, 40, 40, OFX_UI_FONT_SMALL);
     /*
 	shadingModes.push_back("none");
 	shadingModes.push_back("lights");
@@ -64,13 +70,10 @@ void testApp::creaGui(){
     gui->addSlider("highlightOffset", 0.0, 1.0, 0.1, length-xInit, dim, OFX_UI_FONT_SMALL);
     */
     gui->addSpacer(length-xInit, 1);
-    gui->addButton("saveCalibration", false, dim, dim, OFX_UI_FONT_SMALL);
-    gui->addSpacer(length-xInit, 1);
-    gui->addSlider("slowLerpRate", 0, .01, .001, length-xInit, dim, OFX_UI_FONT_SMALL);
-    gui->addSlider("fastLerpRate", 0.0, 1.0, 1, length-xInit, dim, OFX_UI_FONT_SMALL);
-    gui->addSlider("lineWidth", 1, 8, 2, length-xInit, dim, OFX_UI_FONT_SMALL);
+    
+
     parsearInt.push_back("lineWidth");
-    gui->addToggle("useSmoothing", true, dim, dim, OFX_UI_FONT_SMALL);
+    
     
     gui2 = new ofxUICanvas(length+xInit+2, 0, length+xInit, ofGetHeight());
     gui2->setDrawBack(false);
@@ -84,9 +87,10 @@ void testApp::creaGui(){
     gui2->addToggle("cv_calib_zero_tangent_dist", true, dim, dim, OFX_UI_FONT_SMALL);
     gui2->addToggle("cv_calib_fix_principal_point", false, dim, dim, OFX_UI_FONT_SMALL);
     
+    /*
     gui2->addSpacer(length-xInit, 1);
     gui2->addWidgetDown(new ofxUILabel("RENDER", OFX_UI_FONT_MEDIUM));
-    gui2->addToggle("setupMode", true, dim, dim, OFX_UI_FONT_SMALL);
+    */
     
     
     gui2->addSlider("screenPointSize", 1.0, 16.0, 2.0, length-xInit, dim, OFX_UI_FONT_SMALL);
@@ -101,10 +105,14 @@ void testApp::creaGui(){
     gui2->addSlider("fogNear", 0.0, 1000.0, 200.0, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSlider("fogFar", 0.0, 2500.0, 1850, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSpacer(length-xInit, 1);*/
-    gui2->addToggle("randomLighting", false, dim, dim, OFX_UI_FONT_SMALL);
+    
     gui2->addSlider("lightX", -1000, 1000, 200, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSlider("lightY", -1000, 1000, 400, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui2->addSlider("lightZ", -1000, 1000, 800, length-xInit, dim, OFX_UI_FONT_SMALL);
+    gui2->addSpacer(length-xInit, 1);
+    gui2->addSlider("slowLerpRate", 0, .01, .001, length-xInit, dim, OFX_UI_FONT_SMALL);
+    gui2->addSlider("fastLerpRate", 0.0, 1.0, 1, length-xInit, dim, OFX_UI_FONT_SMALL);
+    gui2->addSlider("lineWidth", 1, 8, 2, length-xInit, dim, OFX_UI_FONT_SMALL);
     
     ofAddListener(gui->newGUIEvent,this,&testApp::guiEvent);
     ofAddListener(gui2->newGUIEvent,this,&testApp::guiEvent);
