@@ -29,4 +29,5 @@ class testApp : public ofBaseApp{
     ofxOscSender sender;
     vector<string> drawModes;
     vector<string> shadingModes;
+    vector<string> parsearInt;
 };
