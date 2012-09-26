@@ -51,6 +51,7 @@ void testApp::creaGui(){
     gui->addSpacer(length-xInit, 1);
     gui->addToggle("setupMode", true, 40, 40, OFX_UI_FONT_SMALL);
     gui->addToggle("useSmoothing", false, 40, 40, OFX_UI_FONT_SMALL);
+    gui->addButton("saveSettings", false, 40, 40, OFX_UI_FONT_SMALL);
     gui->addButton("saveCalibration", false, 40, 40, OFX_UI_FONT_SMALL);
     /*
 	shadingModes.push_back("none");
@@ -69,7 +70,7 @@ void testApp::creaGui(){
     gui->addSlider("highlightPosition", 0.0, 1.0, 0.0, length-xInit, dim, OFX_UI_FONT_SMALL);
     gui->addSlider("highlightOffset", 0.0, 1.0, 0.1, length-xInit, dim, OFX_UI_FONT_SMALL);
     */
-    gui->addSpacer(length-xInit, 1);
+    //gui->addSpacer(length-xInit, 1);
     
 
     parsearInt.push_back("lineWidth");
@@ -127,6 +128,8 @@ void testApp::guiEvent(ofxUIEventArgs &e)
     ofxOscMessage m;
     
     if(e.widget->getKind() == OFX_UI_WIDGET_TOGGLE){
+
+        
         ofxUIToggle *boolValor = (ofxUIToggle *) e.widget;
         bool valor = boolValor->getValue();
         m.setAddress("/mapamoko/"+name+"/");
@@ -156,6 +159,16 @@ void testApp::guiEvent(ofxUIEventArgs &e)
         }
         
 
+    }else if (e.widget->getKind() == OFX_UI_WIDGET_BUTTON) {
+        ofxUISlider *floatValor = (ofxUISlider *) e.widget;
+        if(name == "saveSettings"){
+            gui->saveSettings("gui.xml");
+            gui2->saveSettings("gui2.xml");
+        }else{
+            int valor = (int)floatValor->getScaledValue();
+            m.setAddress("/mapamoko/"+name+"/");
+            m.addIntArg(valor);
+        }
     }
     
     
